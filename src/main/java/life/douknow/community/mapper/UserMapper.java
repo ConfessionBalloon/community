@@ -1,10 +1,7 @@
 package life.douknow.community.mapper;
 
 import life.douknow.community.model.User;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface UserMapper {
@@ -17,4 +14,9 @@ public interface UserMapper {
     @Select("SELECT * FROM USER WHERE id = #{id}")
     User findByID(@Param("id") Integer id);
 
+    @Select("SELECT * FROM USER WHERE ACCOUNT_ID = #{accountId}")
+    User findByAccountId(@Param("accountId") String accountId);
+
+    @Update("UPDATE USER SET NAME = #{name}, TOKEN = #{token}, GMT_MODIFIED = #{gmtModified}, BIO = #{bio}, AVATAR_URL = #{avatarUrl} WHERE ACCOUNT_ID = #{accountId}")
+    void update(User user);
 }
