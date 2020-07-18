@@ -4,6 +4,7 @@ import life.douknow.community.dto.PaginationDTO;
 import life.douknow.community.dto.QuestionDTO;
 import life.douknow.community.exception.CustomizeErrorCode;
 import life.douknow.community.exception.CustomizeException;
+import life.douknow.community.mapper.QuestionExtMapper;
 import life.douknow.community.mapper.QuestionMapper;
 import life.douknow.community.mapper.UserMapper;
 import life.douknow.community.model.Question;
@@ -25,6 +26,9 @@ public class QuestionService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
 
     public PaginationDTO list(Integer page, Integer size) {
         PaginationDTO paginationDTO = new PaginationDTO();
@@ -131,5 +135,12 @@ public class QuestionService {
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
         }
+    }
+
+    public void incView(Integer id) {
+        Question question = new Question();
+        question.setId(id);
+        question.setViewCount(1);
+        questionExtMapper.IncView(question);
     }
 }
