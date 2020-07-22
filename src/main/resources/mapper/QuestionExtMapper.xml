@@ -17,10 +17,18 @@
     <result column="gmt_create" jdbcType="BIGINT" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="BIGINT" property="gmtModified" />
   </resultMap>
+
   <update id="IncView" parameterType="life.douknow.community.model.Question">
     update question
     set
     view_count = VIEW_COUNT + #{viewCount,jdbcType=INTEGER}
+    where id = #{id}
+  </update>
+
+  <update id="intCommentCount" parameterType="life.douknow.community.model.Question">
+    update question
+    set
+    comment_count = comment_count + #{commentCount,jdbcType=INTEGER}
     where id = #{id}
   </update>
 </mapper>
