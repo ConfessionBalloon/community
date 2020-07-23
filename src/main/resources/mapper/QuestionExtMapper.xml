@@ -18,7 +18,7 @@
     <result column="gmt_modified" jdbcType="BIGINT" property="gmtModified" />
   </resultMap>
 
-  <update id="IncView" parameterType="life.douknow.community.model.Question">
+  <update id="incView" parameterType="life.douknow.community.model.Question">
     update question
     set
     view_count = VIEW_COUNT + #{viewCount,jdbcType=INTEGER}
