@@ -25,7 +25,7 @@
     where id = #{id}
   </update>
 
-  <update id="intCommentCount" parameterType="life.douknow.community.model.Question">
+  <update id="incCommentCount" parameterType="life.douknow.community.model.Question">
     update question
     set
     comment_count = comment_count + #{commentCount,jdbcType=INTEGER}
