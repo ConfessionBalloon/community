@@ -4,10 +4,7 @@ import life.douknow.community.dto.CommentDTO;
 import life.douknow.community.enums.CommentTypeEnum;
 import life.douknow.community.exception.CustomizeErrorCode;
 import life.douknow.community.exception.CustomizeException;
-import life.douknow.community.mapper.CommentMapper;
-import life.douknow.community.mapper.QuestionExtMapper;
-import life.douknow.community.mapper.QuestionMapper;
-import life.douknow.community.mapper.UserMapper;
+import life.douknow.community.mapper.*;
 import life.douknow.community.model.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +32,9 @@ public class CommentService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private CommentExtMapper commentExtMapper;
+
     @Transactional
     public void insert(Comment comment) {
         if (comment.getParentId() == null || comment.getParentId() == 0){
@@ -51,6 +51,12 @@ public class CommentService {
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
             }
             commentMapper.insert(comment);
+
+            //增加评论数
+            Comment parentComment = new Comment();
+            parentComment.setId(dbComment.getId());
+            parentComment.setCommentCount(1);
+            commentExtMapper.incCommentCount(parentComment);
         } else {
             Question question = questionMapper.selectByPrimaryKey(comment.getParentId());
             if (question == null){
@@ -62,11 +68,12 @@ public class CommentService {
         }
     }
 
-    public List<CommentDTO> listByQuestionId(Long id) {
+    public List<CommentDTO> listByTargetId(Long id, CommentTypeEnum type) {
         CommentExample commentExample = new CommentExample();
         commentExample.createCriteria()
                 .andParentIdEqualTo(id)
-                .andTypeEqualTo(CommentTypeEnum.QUESTION.getType());
+                .andTypeEqualTo(type.getType());
+        commentExample.setOrderByClause("gmt_create desc");
         List<Comment> comments = commentMapper.selectByExample(commentExample);
 
         if (comments.size() == 0){
