@@ -3,6 +3,7 @@ package life.douknow.community.Controller;
 import life.douknow.community.dto.CommentDTO;
 import life.douknow.community.dto.QuestionDTO;
 import life.douknow.community.enums.CommentTypeEnum;
+import life.douknow.community.model.Question;
 import life.douknow.community.service.CommentService;
 import life.douknow.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,13 @@ public class QuestionController {
     public String question(@PathVariable(name = "id") Long id,
                            Model model) {
         QuestionDTO questionDTO = questionService.getById(id);
-
+        List<QuestionDTO> relatedQuestions = questionService.selectRelated(questionDTO);
         List<CommentDTO> comments = commentService.listByTargetId(id, CommentTypeEnum.QUESTION);
-
         questionService.incView(id);
+
+        model.addAttribute("relatedQuestions", relatedQuestions);
         model.addAttribute("question", questionDTO);
         model.addAttribute("comments", comments);
-
         return "question";
     }
 }
